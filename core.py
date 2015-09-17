@@ -14,6 +14,3 @@ def get_auth():
 def save_auth(out_data):
     with open('database.json', 'w') as f:
         json.dump(out_data, f)
-
-
-# {"admin": ["superuser", "123"]}
