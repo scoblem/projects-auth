@@ -3,7 +3,6 @@ from getpass import getpass
 
 class UserClass(object):
     database = core.get_auth()
-    key = core.SECRET_KEY
 
     def __init__(self, user, password):
         self.user = user
