@@ -2,7 +2,7 @@ import core, bcrypt, sys
 from getpass import getpass
 
 class UserClass(object):
-    database = core.get_auth()
+    database = core.get_auth() # import from database.json
 
     def __init__(self, user, password):
         self.user = user
@@ -10,7 +10,10 @@ class UserClass(object):
 
     # If user is valid check password is correct.
     def user_auth(self):
-        return bcrypt.hashpw(self.password, self.database[self.user][0])
+        try:
+            return bcrypt.hashpw(self.password, self.database[self.user][0])
+        except (KeyError):
+            print('User does not exist.')
 
     # If user_auth returns True check if user is in group 'superuser'.
     def admin_auth(self):
@@ -19,6 +22,7 @@ class UserClass(object):
         else:
             return False
 
+    # Add new user with encrypted password & group to 'database'
     def add_user(self, new_user, new_password, group):
         hashed_password = bcrypt.hashpw(new_password+core.SECRET_KEY, bcrypt.gensalt())
         self.database[new_user] = ['0', ['1']]
@@ -26,19 +30,23 @@ class UserClass(object):
         self.database[new_user][1][0] = group
         core.save_auth(self.database)
 
+    # Remove selected user from 'database'.
     def del_user(self, select_user):
         del self.database[select_user]
         core.save_auth(self.database)
 
+    # Reset selected user's password.
     def reset_password(self, select_user, new_password):
         hashed_password = bcrypt.hashpw(new_password+core.SECRET_KEY, bcrypt.gensalt())
         self.database[select_user][0] = hashed_password
         core.save_auth(self.database)
 
+    # Add group to selected user.
     def add_group(self, select_user, group):
         self.database[select_user][1].append(group)
         core.save_auth(self.database)
 
+    # Remove selected user from group.
     def remove_group(self, select_user, group):
         self.database[select_user][1].remove(group)
         core.save_auth(self.database)
@@ -67,12 +75,10 @@ class HandlerClass(UserClass):
                 print('New User Registered')
                 loop()
             else:
-            # raise ValueError('User already exists.')
                 print('Passwords do not match.')
                 loop()
         else:
             print('User already exists.')
-            # print(spacer)
             loop()
 
     def del_user_handler(self):
@@ -82,7 +88,6 @@ class HandlerClass(UserClass):
             print('User removed.')
             loop()
         else:
-        # raise ValueError('User already exists.')
             print('User does not exsist.')
             loop()
 
@@ -97,7 +102,7 @@ class HandlerClass(UserClass):
                 loop()
             else:
                 print("Password did not match, try again.")
-                loop() # try except here
+                loop()
         else:
             print('User does not exist.')
             loop()
@@ -133,8 +138,8 @@ login = HandlerClass(user, password)
 
 def main():
     if login.admin_auth() == True:
-        print('User Authenticated as {0}'.format(login.user))
-        print('Valid commands are: ')
+        print('User Authenticated as {0}\n'.format(login.user))
+        print('Valid Commands: ')
         loop()
     else:
         print("Access Denied.")
@@ -142,8 +147,11 @@ def main():
 def loop():
     display_options = (list(login.dispatch.keys()))
     print(display_options)
-    return login.dispatch[input(': ').lower()]()
-
+    try:
+        return login.dispatch[input(': ').lower()]()
+    except (KeyError):
+        print('Invalid Command')
+        loop()
 
 if __name__ == '__main__':
     main()

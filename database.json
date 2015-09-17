@@ -1,1 +1,1 @@
-{"admin": ["$2a$12$2TAetNoUZLdkVWlxYrT4t.R2jN5JmZhKa6zB8YjxvEvAhnSUEzNue", ["superuser", "default-group"]]}
+{"macdow": ["$2a$12$rUt8VUX68SFtgfGx/JyRd.vvr6cl9Eq1NC6ZuUlG0iUp.7.uMnzJe", ["macdow"]], "admin": ["$2a$12$2TAetNoUZLdkVWlxYrT4t.R2jN5JmZhKa6zB8YjxvEvAhnSUEzNue", ["superuser", "default-group"]], "mark": ["$2a$12$owDxw1s//hS6VwIx7K4fZu5hnmgznsrGFiRfW7A5KYPJxbVeJwqGm", ["default-group"]]}
